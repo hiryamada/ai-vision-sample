@@ -10,14 +10,53 @@ ImageAnalysisClient client = new(
 
 ImageAnalysisResult result = client.Analyze(
     new Uri("https://learn.microsoft.com/azure/ai-services/computer-vision/media/quickstarts/presentation.png"),
-    VisualFeatures.Caption | VisualFeatures.Read,
+    VisualFeatures.Caption |
+    VisualFeatures.DenseCaptions |
+    VisualFeatures.Tags |
+    VisualFeatures.Objects |
+    VisualFeatures.People |
+    VisualFeatures.Read,
     new ImageAnalysisOptions { GenderNeutralCaption = true });
 
-Console.WriteLine("Image analysis results:");
-Console.WriteLine(" Caption:");
+
+Console.WriteLine("===========================");
+Console.WriteLine("キャプション:");
 Console.WriteLine($"   '{result.Caption.Text}', Confidence {result.Caption.Confidence:F4}");
 
-Console.WriteLine(" Read:");
+Console.WriteLine("===========================");
+Console.WriteLine("高密度キャプション:");
+foreach (var caption in result.DenseCaptions.Values)
+{
+    Console.WriteLine($"   '{caption.Text}', Confidence {caption.Confidence:F4}");
+}
+
+Console.WriteLine("===========================");
+Console.WriteLine("タグ:");
+foreach (var tag in result.Tags.Values)
+{
+    Console.WriteLine($"   '{tag.Name}', Confidence {tag.Confidence:F4}");
+}
+
+Console.WriteLine("===========================");
+Console.WriteLine("オブジェクト:");
+foreach (var obj in result.Objects.Values)
+{
+    foreach (var tag in obj.Tags)
+    {
+        Console.WriteLine($"   '{tag.Name}', Confidence {tag.Confidence:F4}");
+    }
+}
+
+Console.WriteLine("===========================");
+Console.WriteLine("人物:");
+foreach (var person in result.People.Values)
+{
+    Console.WriteLine($"   '{person.BoundingBox}', Confidence {person.Confidence:F4}");
+}
+
+
+Console.WriteLine("===========================");
+Console.WriteLine("文字読み取り結果:");
 foreach (DetectedTextBlock block in result.Read.Blocks)
     foreach (DetectedTextLine line in block.Lines)
     {
@@ -27,3 +66,4 @@ foreach (DetectedTextBlock block in result.Read.Blocks)
             Console.WriteLine($"     Word: '{word.Text}', Confidence {word.Confidence.ToString("#.####")}, Bounding Polygon: [{string.Join(" ", word.BoundingPolygon)}]");
         }
     }
+
