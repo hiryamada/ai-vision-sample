@@ -58,6 +58,7 @@ foreach (var person in result.People.Values)
 Console.WriteLine("===========================");
 Console.WriteLine("文字読み取り結果:");
 foreach (DetectedTextBlock block in result.Read.Blocks)
+{
     foreach (DetectedTextLine line in block.Lines)
     {
         Console.WriteLine($"   Line: '{line.Text}', Bounding Polygon: [{string.Join(" ", line.BoundingPolygon)}]");
@@ -66,4 +67,4 @@ foreach (DetectedTextBlock block in result.Read.Blocks)
             Console.WriteLine($"     Word: '{word.Text}', Confidence {word.Confidence.ToString("#.####")}, Bounding Polygon: [{string.Join(" ", word.BoundingPolygon)}]");
         }
     }
-
+}
