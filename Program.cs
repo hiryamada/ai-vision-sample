@@ -9,7 +9,7 @@ ImageAnalysisClient client = new(
     new AzureKeyCredential(key));
 
 ImageAnalysisResult result = client.Analyze(
-    new Uri("https://learn.microsoft.com/azure/ai-services/computer-vision/media/quickstarts/presentation.png"),
+    new Uri("https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/media/quickstarts/presentation.png"),
     VisualFeatures.Caption |
     VisualFeatures.DenseCaptions |
     VisualFeatures.Tags |
