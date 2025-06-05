@@ -8,8 +8,11 @@ ImageAnalysisClient client = new(
     new Uri(endpoint),
     new AzureKeyCredential(key));
 
+using FileStream stream = new("images/sample.jpg", FileMode.Open);
+BinaryData imageData = BinaryData.FromStream(stream);
+
 ImageAnalysisResult result = client.Analyze(
-    new Uri("https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/media/quickstarts/presentation.png"),
+    imageData,
     VisualFeatures.Caption |
     VisualFeatures.DenseCaptions |
     VisualFeatures.Tags |
@@ -45,6 +48,7 @@ foreach (var obj in result.Objects.Values)
     {
         Console.WriteLine($"   '{tag.Name}', Confidence {tag.Confidence:F4}");
     }
+    Console.WriteLine($"   Bounding Box: x: {obj.BoundingBox.X}, y: {obj.BoundingBox.Y}, width: {obj.BoundingBox.Width}, height: {obj.BoundingBox.Height}");
 }
 
 Console.WriteLine("===========================");
@@ -52,8 +56,8 @@ Console.WriteLine("人物:");
 foreach (var person in result.People.Values)
 {
     Console.WriteLine($"   '{person.BoundingBox}', Confidence {person.Confidence:F4}");
+    Console.WriteLine($"   Bounding Box: x: {person.BoundingBox.X}, y: {person.BoundingBox.Y}, width: {person.BoundingBox.Width}, height: {person.BoundingBox.Height}");
 }
-
 
 Console.WriteLine("===========================");
 Console.WriteLine("文字読み取り結果:");
@@ -64,7 +68,7 @@ foreach (DetectedTextBlock block in result.Read.Blocks)
         Console.WriteLine($"   Line: '{line.Text}', Bounding Polygon: [{string.Join(" ", line.BoundingPolygon)}]");
         foreach (DetectedTextWord word in line.Words)
         {
-            Console.WriteLine($"     Word: '{word.Text}', Confidence {word.Confidence.ToString("#.####")}, Bounding Polygon: [{string.Join(" ", word.BoundingPolygon)}]");
+            Console.WriteLine($"     Word: '{word.Text}', Confidence {word.Confidence:F4}, Bounding Polygon: [{string.Join(" ", word.BoundingPolygon)}]");
         }
     }
 }
